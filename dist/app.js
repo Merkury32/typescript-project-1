@@ -5,6 +5,27 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+function validate(validatableINput) {
+    let isValid = true;
+    if (validatableINput.required) {
+        isValid = isValid && validatableINput.value.toString().trim().length !== 0;
+    }
+    if (validatableINput.minLength != null &&
+        typeof validatableINput.value === 'string') {
+        isValid = isValid && validatableINput.value.length >= validatableINput.minLength;
+    }
+    if (validatableINput.maxLength != null &&
+        typeof validatableINput.value === 'string') {
+        isValid = isValid && validatableINput.value.length <= validatableINput.maxLength;
+    }
+    if (validatableINput.min != null && typeof validatableINput.value === 'number') {
+        isValid = isValid && validatableINput.value >= validatableINput.min;
+    }
+    if (validatableINput.max != null && typeof validatableINput.value === 'number') {
+        isValid = isValid && validatableINput.value <= validatableINput.max;
+    }
+    return isValid;
+}
 function autobind(_, _2, descriptor) {
     const originalMethod = descriptor.value;
     const adjDescriptor = {
@@ -33,9 +54,24 @@ class ProjectInput {
         const enteredTitle = this.titleInputElement.value;
         const enteredDescription = this.descriptionInputElement.value;
         const enteredPeople = this.peopleInputElement.value;
-        if (enteredTitle.trim().length === 0 ||
-            enteredDescription.trim().length === 0 ||
-            enteredPeople.trim().length === 0) {
+        const titleValidatable = {
+            value: enteredTitle,
+            required: true
+        };
+        const descriptionValidatable = {
+            value: enteredDescription,
+            required: true,
+            minLength: 5
+        };
+        const peopleValidatable = {
+            value: +enteredPeople,
+            required: true,
+            min: 1,
+            max: 5
+        };
+        if (!validate(titleValidatable) ||
+            !validate(descriptionValidatable) ||
+            !validate(peopleValidatable)) {
             alert('Invalid input');
             return;
         }

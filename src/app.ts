@@ -1,3 +1,39 @@
+// Validation
+interface Validatable {
+    value: string | number;
+    required?: boolean;
+    minLength?: number;
+    maxLength?: number;
+    min?: number;
+    max?: number;
+}
+
+function validate(validatableINput: Validatable) {
+    let isValid = true;
+    if (validatableINput.required) {
+        isValid = isValid && validatableINput.value.toString().trim().length !== 0;
+    }
+    if (
+        validatableINput.minLength != null && 
+        typeof validatableINput.value === 'string'
+    ) {
+        isValid = isValid && validatableINput.value.length >= validatableINput.minLength;
+    }
+    if (
+        validatableINput.maxLength != null && 
+        typeof validatableINput.value === 'string'
+    ) {
+        isValid = isValid && validatableINput.value.length <= validatableINput.maxLength;
+    }
+    if (validatableINput.min != null && typeof validatableINput.value === 'number') {
+        isValid = isValid && validatableINput.value >= validatableINput.min;
+    }
+    if (validatableINput.max != null && typeof validatableINput.value === 'number') {
+        isValid = isValid && validatableINput.value <= validatableINput.max;
+    }
+    return isValid;
+}
+
 // autobind decorator
 function autobind(
     _: any, 
@@ -50,9 +86,26 @@ class ProjectInput {
         const enteredDescription = this.descriptionInputElement.value;
         const enteredPeople = this.peopleInputElement.value;
     
-        if (enteredTitle.trim().length === 0 || 
-            enteredDescription.trim().length === 0 || 
-            enteredPeople.trim().length === 0
+        const titleValidatable: Validatable = {
+            value: enteredTitle,
+            required: true
+        };
+        const descriptionValidatable: Validatable = {
+            value: enteredDescription,
+            required: true,
+            minLength: 5
+        };
+        const peopleValidatable: Validatable = {
+            value: +enteredPeople,
+            required: true,
+            min: 1,
+            max: 5
+        };
+
+        if (
+            !validate(titleValidatable) ||
+            !validate(descriptionValidatable) ||
+            !validate(peopleValidatable)
         ) {
             alert('Invalid input')
             return;
