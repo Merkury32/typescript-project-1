@@ -1,28 +1,14 @@
-// Validation
-export interface Validatable {
-    value: string | number;
-    required?: boolean;
-    minLength?: number;
-    maxLength?: number;
-    min?: number;
-    max?: number;
-}
-
-export function validate(validatableINput: Validatable) {
+export function validate(validatableINput) {
     let isValid = true;
     if (validatableINput.required) {
         isValid = isValid && validatableINput.value.toString().trim().length !== 0;
     }
-    if (
-        validatableINput.minLength != null && 
-        typeof validatableINput.value === 'string'
-    ) {
+    if (validatableINput.minLength != null &&
+        typeof validatableINput.value === 'string') {
         isValid = isValid && validatableINput.value.length >= validatableINput.minLength;
     }
-    if (
-        validatableINput.maxLength != null && 
-        typeof validatableINput.value === 'string'
-    ) {
+    if (validatableINput.maxLength != null &&
+        typeof validatableINput.value === 'string') {
         isValid = isValid && validatableINput.value.length <= validatableINput.maxLength;
     }
     if (validatableINput.min != null && typeof validatableINput.value === 'number') {
@@ -33,3 +19,4 @@ export function validate(validatableINput: Validatable) {
     }
     return isValid;
 }
+//# sourceMappingURL=validation.js.map
